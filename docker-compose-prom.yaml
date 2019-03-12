@@ -50,6 +50,8 @@ services:
     volumes:
       - ./prometheus/:/etc/prometheus/
       - ./prometheus/data:/prometheus
+    depends_on:
+      - influxdb
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
