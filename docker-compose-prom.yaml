@@ -22,6 +22,7 @@ services:
     restart: "always"
     links:
       - influxdb:influxdb
+      - database:database
       - prometheus:prometheus
     volumes:
       - type: volume
@@ -63,6 +64,7 @@ services:
       - influxdb:influxdb
       - node-exporter:node-exporter
       - cadvisor:cadvisor
+#      - blackbox_exporter
     networks:
       - back-tier
     restart: always
@@ -99,6 +101,33 @@ services:
       mode: global
     cap_add:
       - ALL
+
+#added for website monitoring
+ # blackbox_exporter:
+  #  image: prom/blackbox-exporter:v0.13.0
+   # volumes:
+    #  - ./blackbox/:/etc/blackbox/
+   # command:
+ #     -  '--path.procfs=/host/proc'
+ #     - '--path.sysfs=/host/sys'
+ #     - --collector.filesystem.ignored-mount-points
+ #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+#      - '--config.file=/config/blackbox.yml'
+    #  - '--config.file=/opt/data/monitoring/docker-composer-ubuntu-v2/blackbox/blackbox.yml' 
+   # ports:
+    #  - '9115:9115'
+    #networks:
+     # - back-tier
+  #  restart: always
+   # deploy:
+    #  mode: global
+   # cap_add:
+    #  - ALL
+################################################
+
+
+
+
   alertmanager:
     image: prom/alertmanager
     ports:

@@ -67,18 +67,28 @@ scrape_configs:
     #   port: 9100
     
     static_configs:
-          - targets: ['node-exporter:9100','10.10.10.77:9100','10.10.10.95:9100','10.10.10.54:9100','100.64.3.26:9100','100.64.3.25:9100','100.64.3.56:9100','10.10.10.56:9100']
+          - targets: ['node-exporter:9100']
 
   - job_name: 'win-exporter'
 
     scrape_interval: 5s
 
     static_configs:
-          - targets: ['193.168.5.215:9182','193.168.5.207:9182','193.168.5.168:9182','193.168.5.161:9182']
+          - targets: ['hostIP:9182']
 
-#  - job_name: 'node'
-    
-#    scrape_ineterval: 5s
-  
-#    static_config:
-#          - targets: ['10.10.10.77:9100']
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        - https://synectiks.com
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: hostIP:9115  # The blackbox exporter's real hostname:port.
+
